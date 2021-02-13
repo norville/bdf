@@ -1,0 +1,6 @@
+# Upgrade pip
+#python3 -m pip install --upgrade pip setuptools wheel meson
+
+# Required PyPI packages
+autopep8
+flake8
