@@ -20,4 +20,4 @@
 code/*
 
 # un-ignore specific items inside repo
-!code/README.md
+#!code/README.md
