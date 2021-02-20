@@ -378,7 +378,7 @@
         arch) # System is Arch
 
             # Install or update required packages via Pacman
-	    arch_pkgs="$(xargs -a <(awk '! /^ *(#|$)/' "${CONF_DIR}/pkgfile") -r) tilix"
+        arch_pkgs="$(xargs -a <(awk '! /^ *(#|$)/' "${CONF_DIR}/pkgfile") -r) tilix"
             bdb_command "Installing Arch packages: <${arch_pkgs}>"
             sudo pacman --noconfirm --needed -S ${arch_pkgs} # NO QUOTES PLEASE - ensure variable expasnsion
             bdb_success "installing Arch packages"
@@ -435,7 +435,7 @@
         debian) # System is Debian
 
             # Install or update required packages via APT
-	    debian_pkgs="$(xargs -a <(awk '! /^ *(#|$)/' "${CONF_DIR}/pkgfile") -r)"
+        debian_pkgs="$(xargs -a <(awk '! /^ *(#|$)/' "${CONF_DIR}/pkgfile") -r)"
             bdb_command "Installing APT packages: <${debian_pkgs}>"
             sudo apt-get install -y ${debian_pkgs} # NO QUOTES PLEASE - ensure variable expasnsion
             bdb_success "installing APT packages"
