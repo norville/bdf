@@ -3,7 +3,7 @@
 
 # Un-ignore root's content
 !.bashrc
-!.bdf.cfg
+!.bdf_config.d
 !.gitconfig
 !.gitignore
 !.mackup.cfg

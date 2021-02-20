@@ -1,5 +1,7 @@
 #!/bin/bash
 
+### BDF BOOT - bootstrap Bassa's Dot Files
+
 { # ensure download of entire script
 
     ### Define global environment
@@ -16,10 +18,10 @@
     WHT_COL="${ESC_SEQ}97;01m"    # white
 
     ## Global variables
-    DISTRO=""                        # unix distro name
-    CONF_DIR="${HOME}/.dfconf.d"     # config files dir
-    LOGFILE="${CONF_DIR}/dfboot.log" # dfboot log file
-    PROGNAME="$(basename "$0")"      # current running command
+    DISTRO=""                           # unix distro name
+    CONF_DIR="${HOME}/.bdf_config.d"    # config files dir
+    LOGFILE="${CONF_DIR}/bdf-boot.log"  # dfboot log file
+    PROGNAME="$(basename "$0")"         # current running command
 
     ## Flags
     _FRESH_=""   # fresh install
