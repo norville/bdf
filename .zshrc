@@ -84,7 +84,7 @@ fi
 
 ### LISTING ############################################################
 
-ls_colors="${HOME}/.bdf.cfg/gruvbox.dircolors"
+ls_colors="${HOME}/.bdf_config.d/gruvbox.dircolors"
 if [ -f /etc/lsb-release ]; then
     eval "$(dircolors ${ls_colors})"
     alias ls='ls -v --color=auto'

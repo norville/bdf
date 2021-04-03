@@ -18,6 +18,7 @@
 # Ignore specific items inside repo
 .vim/bundle/*
 code/*
+*.zwc
 
 # un-ignore specific items inside repo
 #!code/README.md
