@@ -216,7 +216,7 @@
 
         # Prepare local system
         case "${DISTRO}" in
-        arch) # System is Arch
+        arch)   # System is Arch
             bdb_command "Updating Pacman"
             sudo pacman -Syy
             bdb_success "updating Pacman"
@@ -231,7 +231,7 @@
                 test -x "${clt_path}"; then
 
                 # CLT installed
-                bdb_outcome "ready"
+                bdb_outcome "installed"
 
             else
 
@@ -265,13 +265,14 @@
             else
 
                 # Update homebrew
-                bdb_outcome "ready"
+                bdb_outcome "installed"
                 bdb_command "Updating Homebrew"
                 brew update
                 bdb_success "updating Homebrew"
 
             fi
 
+            #TODO move to env
             # Mac App Store login
             bdb_command "Signing in Mac App Store"
             mas signin bassanimarco79@gmail.com
@@ -296,7 +297,7 @@
 
             else
 
-                bdb_outcome "ready"
+                bdb_outcome "installed"
 
             fi
             ;;
@@ -317,7 +318,7 @@
 
         bdb_run "Checking dotfiles repository"
         # Set bare repo dir
-        repo_path="${HOME}/.dfbare"
+        repo_path="${HOME}/.bdf.git"
         mkdir -p "${repo_path}"
         # If bare repo is missing
         if ! git --git-dir=${repo_path} rev-parse --is-bare-repository &>/dev/null; then
@@ -327,12 +328,13 @@
             _FRESH_="true"
 
             # Clone remote repo into bare repo
-            repo_url="https://github.com/norville/dotfiles.git"
+            repo_url="https://github.com/norville/bdf.git"
             bdb_command "Cloning dotfiles into a bare repo"
-            git clone --bare "${repo_url}" "${repo_path}" # Clone master branch
-            #git clone --bare -b <git-branch> ${repo_url} ${repo_path}   # Clone specifc branch
+            git clone --bare "${repo_url}" "${repo_path}"               # Clone main branch
+            #git clone --bare -b <git-branch> ${repo_url} ${repo_path}  # Clone specifc branch
             bdb_success "cloning dotfiles into <${repo_path}>"
 
+            #TODO
             # # Backup existing dotfiles
             # bdb_command "Backing up existing dotfiles"
             # backup_path="${HOME}/.dfbackup"
@@ -351,7 +353,7 @@
             # Configure repo
             bdb_command "Configuring repository"
             # Set remote url
-            remote_url="git@github.com:norville/dotfiles.git"
+            remote_url="git@github.com:norville/bdf.git"
             git --git-dir="${repo_path}" --work-tree="${HOME}" config remote.origin.url "${remote_url}"
             git --git-dir="${repo_path}" --work-tree="${HOME}" config remote.origin.pushurl "${remote_url}"
             # Show all untracked files
@@ -361,6 +363,7 @@
         else
 
             # Repo ok
+            #TODO sync with remote, handle local changes
             bdb_outcome "ready"
 
         fi
@@ -380,9 +383,9 @@
         arch) # System is Arch
 
             # Install or update required packages via Pacman
-        arch_pkgs="$(xargs -a <(awk '! /^ *(#|$)/' "${CONF_DIR}/pkgfile") -r) tilix"
+            arch_pkgs="$(xargs -a <(awk '! /^ *(#|$)/' "${CONF_DIR}/pkgfile") -r)"
             bdb_command "Installing Arch packages: <${arch_pkgs}>"
-            sudo pacman --noconfirm --needed -S ${arch_pkgs} # NO QUOTES PLEASE - ensure variable expasnsion
+            sudo pacman --noconfirm --needed -S ${arch_pkgs} # NO QUOTES PLEASE - ensure variable expansion
             bdb_success "installing Arch packages"
 
             # Cleanup
@@ -437,9 +440,9 @@
         debian) # System is Debian
 
             # Install or update required packages via APT
-        debian_pkgs="$(xargs -a <(awk '! /^ *(#|$)/' "${CONF_DIR}/pkgfile") -r)"
+            debian_pkgs="$(xargs -a <(awk '! /^ *(#|$)/' "${CONF_DIR}/pkgfile") -r)"
             bdb_command "Installing APT packages: <${debian_pkgs}>"
-            sudo apt-get install -y ${debian_pkgs} # NO QUOTES PLEASE - ensure variable expasnsion
+            sudo apt-get install -y ${debian_pkgs} # NO QUOTES PLEASE - ensure variable expansion
             bdb_success "installing APT packages"
 
             # Cleanup
@@ -496,6 +499,8 @@
     ## Configure user environment
     bdb_do_env() {
 
+        #TODO rewrite all function
+
         bdb_info_in "[ENV] configure user environment"
 
         bdb_run "Checking ZSH as your login shell"
@@ -517,6 +522,7 @@
 
         fi
 
+        #TOD move to upgrade
         # Delete Antigen dir to force cloning
         bdb_run "Checking Antigen as ZSH plugin manager"
         antigen_dir="${HOME}/.antigen"
@@ -531,6 +537,7 @@
 
         fi
 
+        #TOD move to upgrade
         # Delete Vundle dir to force cloning
         bdb_run "Checking Vundle as VIM plugin manager"
         vundle_path="${HOME}/.vim/bundle"
