@@ -272,8 +272,10 @@
 
             fi
 
-            #TODO move to env
             # Mac App Store login
+            if ! type mas &>/dev/null; then
+                brew install mas
+            fi
             bdb_command "Signing in Mac App Store"
             mas signin bassanimarco79@gmail.com
             bdb_success "signing in Mac App Store"
