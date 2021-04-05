@@ -330,7 +330,7 @@
             _FRESH_="true"
 
             # Clone remote repo into bare repo
-            repo_url="https://github.com/norville/bdf.git"
+            repo_url="git@github.com:norville/bdf.git"
             bdb_command "Cloning dotfiles into a bare repo"
             git clone --bare "${repo_url}" "${repo_path}"               # Clone main branch
             #git clone --bare -b <git-branch> ${repo_url} ${repo_path}  # Clone specifc branch
@@ -340,11 +340,9 @@
             bdb_command "Backing up existing dotfiles"
             backup_path="${HOME}/.bdf.bak"
             mkdir -p "${backup_path}"
-            # List existing dotfiles
+            # List existing dotfiles and move them
             git --git-dir="${repo_path}" --work-tree="${HOME}" checkout 2>&1 | \
-                egrep "\s+\." | \
-                awk {'print $1'} | \
-                xargs -I{} mv {} "${backup_path}"/{}
+                egrep "\s+\." | awk {'print $1'} | xargs -I{} mv {} "${backup_path}"/{}
             bdb_success "backing up existing dotfiles"
 
             bdb_command "Checking out repository"
@@ -354,7 +352,6 @@
             # Configure repo
             bdb_command "Configuring repository"
             # Set remote url
-            remote_url="git@github.com:norville/bdf.git"
             git --git-dir="${repo_path}" --work-tree="${HOME}" config remote.origin.url "${remote_url}"
             git --git-dir="${repo_path}" --work-tree="${HOME}" config remote.origin.pushurl "${remote_url}"
             # Show all untracked files
