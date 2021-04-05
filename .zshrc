@@ -64,14 +64,7 @@ fi
 
 # Start keychain ssh-agent
 if type keychain &>/dev/null; then
-    eval $(keychain --eval --nogui -Q -q bassa_key)
-fi
-
-# Enable VTE for Tilix
-if [[ -f /etc/profile.d/vte.sh ]]; then
-    if [[ "${TILIX_ID}" || "${VTE_VERSION}" ]]; then
-        source /etc/profile.d/vte.sh
-    fi
+    eval $(keychain --eval --quiet --nogui --noask bassa_at_basmini norville_at_github)
 fi
 
 ###############################################################################
