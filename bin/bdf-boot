@@ -337,13 +337,16 @@
             bdb_success "cloning dotfiles into <${repo_path}>"
 
             # Backup existing dotfiles
-            bdb_command "Backing up existing dotfiles"
-            backup_path="${HOME}/.bdf.bak"
-            mkdir -p "${backup_path}"
-            # List existing dotfiles and move them
-            git --git-dir="${repo_path}" --work-tree="${HOME}" checkout 2>&1 | \
-                egrep "\s+\." | awk {'print $1'} | xargs -I{} mv {} "${backup_path}"/{}
-            bdb_success "backing up existing dotfiles"
+            backup_list=$(
+                git --git-dir="${repo_path}" --work-tree="${HOME}" checkout 2>&1 | egrep "\s+\." | awk {'print $1'}
+            )
+            if [[ ${backup_list} ]]; then
+                bdb_command "Backing up existing dotfiles"
+                backup_path="${HOME}/.bdf.bak"
+                mkdir -p "${backup_path}"
+                mv ${backup_list} "${backup_path}"/
+                bdb_success "backing up existing dotfiles"
+            fi
 
             bdb_command "Checking out repository"
             git --git-dir="${repo_path}" --work-tree="${HOME}" checkout -f
@@ -352,8 +355,8 @@
             # Configure repo
             bdb_command "Configuring repository"
             # Set remote url
-            git --git-dir="${repo_path}" --work-tree="${HOME}" config remote.origin.url "${remote_url}"
-            git --git-dir="${repo_path}" --work-tree="${HOME}" config remote.origin.pushurl "${remote_url}"
+            #git --git-dir="${repo_path}" --work-tree="${HOME}" config remote.origin.url "${repo_url}"
+            #git --git-dir="${repo_path}" --work-tree="${HOME}" config remote.origin.pushurl "${repo_url}"
             # Show all untracked files
             git --git-dir="${repo_path}" --work-tree="${HOME}" config status.showUntrackedFiles all
             bdb_success "configuring repository"
@@ -552,45 +555,44 @@
 
         #Restore user preferences
         case "${DISTRO}" in
-
         arch) # System is Arch
 
-            # Install nerd fonts for p10k
-            # Set variables
-            font_path="${HOME}/.local/share/fonts"
-            fura_name="Fura Mono Regular Nerd Font.otf"
-            meslo_name="Meslo LG S Regular Nerd Font.ttf"
-            fura_url="https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/FiraMono/Regular/complete/Fura%20Mono%20Regular%20Nerd%20Font%20Complete.otf"
-            meslo_url="https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Meslo/S/Regular/complete/Meslo%20LG%20S%20Regular%20Nerd%20Font%20Complete.ttf"
+            # # Install nerd fonts for p10k
+            # # Set variables
+            # font_path="${HOME}/.local/share/fonts"
+            # fura_name="Fura Mono Regular Nerd Font.otf"
+            # meslo_name="Meslo LG S Regular Nerd Font.ttf"
+            # fura_url="https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/FiraMono/Regular/complete/Fura%20Mono%20Regular%20Nerd%20Font%20Complete.otf"
+            # meslo_url="https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Meslo/S/Regular/complete/Meslo%20LG%20S%20Regular%20Nerd%20Font%20Complete.ttf"
 
-            # Download fonts
-            mkdir -p "${font_path}"
-            bdb_command "Installing ${fura_name}"
-            curl -fLo "${font_path}/${fura_name}" "${fura_url}"
-            bdb_success "installing ${fura_name}"
-            bdb_command "Installing ${meslo_name}"
-            curl -fLo "${font_path}/${meslo_name}" "${meslo_url}"
-            bdb_success "installing ${meslo_name}"
+            # # Download fonts
+            # mkdir -p "${font_path}"
+            # bdb_command "Installing ${fura_name}"
+            # curl -fLo "${font_path}/${fura_name}" "${fura_url}"
+            # bdb_success "installing ${fura_name}"
+            # bdb_command "Installing ${meslo_name}"
+            # curl -fLo "${font_path}/${meslo_name}" "${meslo_url}"
+            # bdb_success "installing ${meslo_name}"
 
-            # Update fonts cach
-            bdb_command "Updating fonts cache"
-            fc-cache -f
-            bdb_success "updating fonts cache"
+            # # Update fonts cach
+            # bdb_command "Updating fonts cache"
+            # fc-cache -f
+            # bdb_success "updating fonts cache"
 
-            # Install Gruvbox theme for Tilix
-            bdb_command "Installing Gruvbox theme"
-            # Clone custom tilix-gruvbox repo
-            git clone https://github.com/MichaelThessel/tilix-gruvbox.git
-            cd tilix-gruvbox
-            sudo cp gruvbox-* /usr/share/tilix/schemes
-            cd ..
-            rm -rf tilix-gruvbox
-            bdb_success "installing Gruvbox theme"
+            # # Install Gruvbox theme for Tilix
+            # bdb_command "Installing Gruvbox theme"
+            # # Clone custom tilix-gruvbox repo
+            # git clone https://github.com/MichaelThessel/tilix-gruvbox.git
+            # cd tilix-gruvbox
+            # sudo cp gruvbox-* /usr/share/tilix/schemes
+            # cd ..
+            # rm -rf tilix-gruvbox
+            # bdb_success "installing Gruvbox theme"
 
-            # Restore Tilix preferences
-            bdb_command "Loading dconf profile"
-            dconf load /com/gexperts/Tilix/ <"${CONF_DIR}/tilix.dconf"
-            bdb_success "loading dconf profile"
+            # # Restore Tilix preferences
+            # bdb_command "Loading dconf profile"
+            # dconf load /com/gexperts/Tilix/ <"${CONF_DIR}/tilix.dconf"
+            # bdb_success "loading dconf profile"
 
             #TODO GNU Stow or mackup
 
@@ -598,40 +600,40 @@
 
         darwin) # System is macOS
 
-            # If this is a fresh system
-            if [[ -n "${_FRESH_}" ]]; then
+            # # If this is a fresh system
+            # if [[ "${_FRESH_}" ]]; then
 
-                # Set macos defaults
-                bdb_command "Restoring macOS preferences"
-                #macos_prefs="${HOME}/bin/macos_defaults"
-                #[[ -f "${macos_prefs}" ]] || bdb_handle_error "Invalid file: ${macos_prefs}"
-                source "${HOME}/bin/macos_defaults"
-                bdb_success "restoring macOS preferences"
+            #     # Set macos defaults
+            #     bdb_command "Restoring macOS preferences"
+            #     #macos_prefs="${HOME}/bin/macos_defaults"
+            #     #[[ -f "${macos_prefs}" ]] || bdb_handle_error "Invalid file: ${macos_prefs}"
+            #     source "${HOME}/bin/macos_defaults"
+            #     bdb_success "restoring macOS preferences"
 
-                # Restore preferences via mackup
-                bdb_command "Restoring App preferences"
-                #type mackup &>/dev/null || bdb_handle_error "Invalid command: <mackup>"
-                mackup restore
-                bdb_success "restoring App preferences"
+            #     # Restore preferences via mackup
+            #     bdb_command "Restoring App preferences"
+            #     #type mackup &>/dev/null || bdb_handle_error "Invalid command: <mackup>"
+            #     mackup restore
+            #     bdb_success "restoring App preferences"
 
-            fi
+            # fi
 
-            # Restore VSCode extensions
-            bdb_run "Checking VSCode extensions"
-            ext_path="${CONF_DIR}/vscode-ext"
-            # If no extensions installed and extensions file exists
-            if [[ ! "$(code --list-extensions)" && -f "${ext_path}" ]]; then
+            # # Restore VSCode extensions
+            # bdb_run "Checking VSCode extensions"
+            # ext_path="${CONF_DIR}/vscode-ext"
+            # # If no extensions installed and extensions file exists
+            # if [[ ! "$(code --list-extensions)" && -f "${ext_path}" ]]; then
 
-                bdb_outcome "missing"
-                bdb_command "Installing VSCode extensions"
-                cat "${ext_path}" | xargs -n 1 code --install-extension
-                bdb_success "installing VSCode extensions"
+            #     bdb_outcome "missing"
+            #     bdb_command "Installing VSCode extensions"
+            #     cat "${ext_path}" | xargs -n 1 code --install-extension
+            #     bdb_success "installing VSCode extensions"
 
-            else
+            # else
 
-                bdb_outcome "ready"
+            #     bdb_outcome "ready"
 
-            fi
+            # fi
 
             ;;
 
@@ -740,10 +742,10 @@
     if [[ "${OPTIND}" -gt 1 ]]; then
 
         # Flag mode: bootstrap only flagged items
-        [[ -n "${_REPO_}" ]] && bdb_do_repo
-        [[ -n "${_APPS_}" ]] && bdb_do_apps
-        [[ -n "${_ENV_}" ]] && bdb_do_env
-        [[ -n "${_UPGD_}" ]] && bdb_do_upgrade
+        [[ "${_REPO_}" ]] && bdb_do_repo
+        [[ "${_APPS_}" ]] && bdb_do_apps
+        [[ "${_ENV_}" ]] && bdb_do_env
+        [[ "${_UPGD_}" ]] && bdb_do_upgrade
 
     else # No options parsed
 
