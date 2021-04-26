@@ -337,9 +337,12 @@
             bdb_success "cloning dotfiles into <${repo_path}>"
 
             # Backup existing dotfiles
+            trap "" ERR # disable ERR handling
+            # checkout repo and save file names of existing dotfiles
             backup_list=$(
                 git --git-dir="${repo_path}" --work-tree="${HOME}" checkout 2>&1 | egrep "\s+\." | awk {'print $1'}
             )
+            trap - ERR  # reset ERR handling
             if [[ ${backup_list} ]]; then
                 bdb_command "Backing up existing dotfiles"
                 backup_path="${HOME}/.bdf.bak"
