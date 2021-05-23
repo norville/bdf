@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash # start new process
 
 ### BDF BOOT - bootstrap Bassa's Dot Files
 
