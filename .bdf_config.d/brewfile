@@ -27,7 +27,7 @@ brew "findutils"
 
 # Frameworks
 brew "python"
-brew "ruby"
+#brew "ruby"
 #brew "node"
 #brew "yarn"
 
@@ -74,7 +74,7 @@ mas "Numbers", id: 409203825
 mas "Pages", id: 409201541
 mas "Pixelmator", id: 407963104
 mas "Spark", id: 1176895641
-mas "Sweet Home 3D", id: 669289700
+#mas "Sweet Home 3D", id: 669289700
 mas "The Unarchiver", id: 425424353
 mas "Telegram", id: 747648890
 mas "WhatsApp", id: 1147396723

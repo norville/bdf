@@ -2,6 +2,7 @@ bat
 curl
 git
 keychain
+tree
 vim 
 wget
 zsh
