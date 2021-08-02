@@ -47,7 +47,7 @@ cask "skype"
 #cask "sonos"
 #cask "spectacle"
 cask "spotify"
-cask "anydesk"
+#cask "anydesk"
 cask "tor-browser"
 cask "transmission"
 cask "visual-studio-code"
@@ -84,6 +84,6 @@ mas "Moom", id: 419330170
 
 # Fonts
 cask "font-fira-mono"
-cask "font-firamono-nerd-font"
+cask "font-fira-mono-nerd-font"
 cask "font-meslo-lg"
-cask "font-meslo-nerd-font"
+cask "font-meslo-lg-nerd-font"
