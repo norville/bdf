@@ -27,7 +27,7 @@ brew "findutils"
 
 # Frameworks
 brew "python"
-brew "ruby"
+#brew "ruby"
 #brew "node"
 #brew "yarn"
 
@@ -47,7 +47,7 @@ cask "skype"
 #cask "sonos"
 #cask "spectacle"
 cask "spotify"
-cask "anydesk"
+#cask "anydesk"
 cask "tor-browser"
 cask "transmission"
 cask "visual-studio-code"
@@ -74,7 +74,7 @@ mas "Numbers", id: 409203825
 mas "Pages", id: 409201541
 mas "Pixelmator", id: 407963104
 mas "Spark", id: 1176895641
-mas "Sweet Home 3D", id: 669289700
+#mas "Sweet Home 3D", id: 669289700
 mas "The Unarchiver", id: 425424353
 mas "Telegram", id: 747648890
 mas "WhatsApp", id: 1147396723
@@ -84,6 +84,6 @@ mas "Moom", id: 419330170
 
 # Fonts
 cask "font-fira-mono"
-cask "font-firamono-nerd-font"
+cask "font-fira-mono-nerd-font"
 cask "font-meslo-lg"
-cask "font-meslo-nerd-font"
+cask "font-meslo-lg-nerd-font"
