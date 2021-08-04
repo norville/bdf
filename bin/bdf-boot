@@ -330,7 +330,7 @@
             _FRESH_="true"
 
             # Clone remote repo into bare repo
-            repo_url="git@github.com:norville/bdf.git"
+            repo_url="https://github.com/norville/bdf.git"
             bdb_command "Cloning dotfiles into a bare repo"
             git clone --bare "${repo_url}" "${repo_path}"               # Clone main branch
             #git clone --bare -b <git-branch> ${repo_url} ${repo_path}  # Clone specifc branch
