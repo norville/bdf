@@ -18,6 +18,7 @@
 # Ignore specific items inside repo
 .vim/bundle/*
 code/*
+*.swp
 *.zwc
 
 # un-ignore specific items inside repo
