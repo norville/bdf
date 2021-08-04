@@ -332,8 +332,8 @@
             # Clone remote repo into bare repo
             repo_url="https://github.com/norville/bdf.git"
             bdb_command "Cloning dotfiles into a bare repo"
-            git clone --bare "${repo_url}" "${repo_path}"               # Clone main branch
-            #git clone --bare -b <git-branch> ${repo_url} ${repo_path}  # Clone specifc branch
+            #git clone --bare "${repo_url}" "${repo_path}"      # Clone main branch
+            git clone --bare -b test ${repo_url} ${repo_path}   # Clone specifc branch
             bdb_success "cloning dotfiles into <${repo_path}>"
 
             # Backup existing dotfiles
@@ -348,7 +348,7 @@
                 bdb_success "backing up existing dotfiles"
             fi
 
-            bdb_command "Checking out repository"
+
             git --git-dir="${repo_path}" --work-tree="${HOME}" checkout -f
             bdb_success "checking out repository"
 
