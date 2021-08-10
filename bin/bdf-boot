@@ -323,7 +323,7 @@
         repo_path="${HOME}/.bdf.git"
         mkdir -p "${repo_path}"
         # If bare repo is missing
-        if ! git --git-dir=${repo_path} rev-parse --is-bare-repository &>/dev/null; then
+        if ! git --git-dir="${repo_path}" rev-parse --is-bare-repository &>/dev/null; then
 
             bdb_outcome "missing"
             # Fresh system
@@ -333,13 +333,11 @@
             repo_url="https://github.com/norville/bdf.git"
             bdb_command "Cloning dotfiles into a bare repo"
             #git clone --bare "${repo_url}" "${repo_path}"      # Clone main branch
-            git clone --bare -b test ${repo_url} ${repo_path}   # Clone specifc branch
+            git clone --bare -b test "${repo_url}" "${repo_path}"   # Clone specifc branch
             bdb_success "cloning dotfiles into <${repo_path}>"
 
             # Backup existing dotfiles
-            backup_list=$(
-                git --git-dir="${repo_path}" --work-tree="${HOME}" checkout 2>&1 | egrep "\s+\." | awk {'print $1'}
-            )
+            backup_list="$(git --git-dir=${repo_path} --work-tree=${HOME} checkout 2>&1 | egrep "\s+\." | awk {'print $1'})"
             if [[ ${backup_list} ]]; then
                 bdb_command "Backing up existing dotfiles"
                 backup_path="${HOME}/.bdf.bak"
