@@ -361,9 +361,11 @@
 
         else
 
-            # Repo ok
-            #TODO sync with remote, handle local changes
-            bdb_outcome "ready"
+            bdb_outcome "found repo..."
+            #TODO
+            # - checkout
+            # - sync with remote
+            # - handle local changes
 
         fi
 
