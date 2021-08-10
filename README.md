@@ -2,10 +2,14 @@
 Bassa's dotfiles
 
 ## Bootstrap dotfiles
+
+### Linux
 ```sh
-wget -O - https://raw.githubusercontent.com/norville/bdf/test/bin/bdf-boot | bash
+bash -c "$(wget -qO - https://raw.githubusercontent.com/norville/bdf/test/bin/bdf-boot)"
 ```
 or
+
+### macOS
 ```sh
-curl https://raw.githubusercontent.com/norville/bdf/test/bin/bdf-boot | bash
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/norville/bdf/test/bin/bdf-boot)"
 ```
