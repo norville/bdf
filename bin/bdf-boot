@@ -336,11 +336,15 @@
             git clone --bare -b test "${repo_url}" "${repo_path}"   # Clone specifc branch
             bdb_success "cloning dotfiles into <${repo_path}>"
 
+            # Detect existing dotfiles
+            trap - ERR                  # disable ERR trap, expecting checkout errors
+            backup_list="$(git --git-dir=${repo_path} --work-tree=${HOME} checkout 2>&1 | \
+                        egrep "\s+\." | \
+                        awk {'print $1'})"
+            trap "bdb_handle_error" ERR # reset ERR trap
+
             # Backup existing dotfiles
-            # TODO disable trap 
-            backup_list="$(git --git-dir=${repo_path} --work-tree=${HOME} checkout 2>&1 | egrep "\s+\." | awk {'print $1'})"
-            # TODO enable trap 
-            if [[ ${backup_list} ]]; then
+            if [[ -n ${backup_list} ]]; then
                 bdb_command "Backing up existing dotfiles"
                 backup_path="${HOME}/.bdf.bak"
                 mkdir -p "${backup_path}"
@@ -348,7 +352,7 @@
                 bdb_success "backing up existing dotfiles"
             fi
 
-
+            # Checkout repo
             git --git-dir="${repo_path}" --work-tree="${HOME}" checkout -f
             bdb_success "checking out repository"
 
