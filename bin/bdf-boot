@@ -337,7 +337,9 @@
             bdb_success "cloning dotfiles into <${repo_path}>"
 
             # Backup existing dotfiles
+            # TODO disable trap 
             backup_list="$(git --git-dir=${repo_path} --work-tree=${HOME} checkout 2>&1 | egrep "\s+\." | awk {'print $1'})"
+            # TODO enable trap 
             if [[ ${backup_list} ]]; then
                 bdb_command "Backing up existing dotfiles"
                 backup_path="${HOME}/.bdf.bak"
