@@ -337,11 +337,12 @@
             bdb_success "cloning dotfiles into <${repo_path}>"
 
             # Detect existing dotfiles
-            trap - ERR                  # disable ERR trap, expecting checkout errors
-            backup_list="$(git --git-dir=${repo_path} --work-tree=${HOME} checkout 2>&1 | \
-                        egrep "\s+\." | \
-                        awk {'print $1'})"
-            trap "bdb_handle_error" ERR # reset ERR trap
+            #trap - ERR                  # disable ERR trap, expecting checkout errors
+            backup_list="$(
+                git --git-dir="${repo_path}" --work-tree="${HOME}" checkout 2>&1 |
+                grep -E "\s+\." | awk {'print $1'}
+            )" || true
+            #trap "bdb_handle_error" ERR # reset ERR trap
 
             # Backup existing dotfiles
             if [[ -n ${backup_list} ]]; then
@@ -412,7 +413,7 @@
 
             bdb_run "Looking for formulas already installed"
             # If extra formulae are installed
-            if [[ "$(brew bundle cleanup --file=${brewfile_path})" ]]; then
+            if [[ "$(brew bundle cleanup --file="${brewfile_path}")" ]]; then
 
                 bdb_outcome "found"
                 (bdb_ask "uninstall extra formulae" && { # Yes (true)
@@ -727,7 +728,7 @@
     done
 
     # getopts finished, shift to args
-    shift "$((${OPTIND} - 1))"
+    shift "$((OPTIND - 1))"
 
     # Parse arguments
     if [[ "$#" -gt 0 ]]; then
