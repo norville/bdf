@@ -1,4 +1,5 @@
-#!/usr/bin/env bash # start new process
+#!/usr/bin/env bash
+# Use 'env' to start bash as a new process
 
 ### BDF BOOT - bootstrap Bassa's Dot Files
 
@@ -243,7 +244,7 @@
                 # in Apple's SUS catalog
                 touch /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
                 # find the CLI Tools update
-                clt_package="$(softwareupdate -l | grep '*.*Command Line' | awk -F ":" '{print $2}' | sed -e 's/^ *//' | tr -d '\n')"
+                clt_package="$(softwareupdate -l | grep '.*Command Line' | awk -F ":" '{print $2}' | sed -e 's/^ *//' | tr -d '\n')"
                 # install it
                 softwareupdate -i "${clt_package}"
                 bdb_success "installing CLT"
@@ -337,19 +338,17 @@
             bdb_success "cloning dotfiles into <${repo_path}>"
 
             # Detect existing dotfiles
-            #trap - ERR                  # disable ERR trap, expecting checkout errors
             backup_list="$(
                 git --git-dir="${repo_path}" --work-tree="${HOME}" checkout 2>&1 |
-                grep -E "\s+\." | awk {'print $1'}
+                grep -E "\s+\." | awk '{print $1}'
             )" || true
-            #trap "bdb_handle_error" ERR # reset ERR trap
 
             # Backup existing dotfiles
             if [[ -n ${backup_list} ]]; then
                 bdb_command "Backing up existing dotfiles"
                 backup_path="${HOME}/.bdf.bak"
                 mkdir -p "${backup_path}"
-                mv ${backup_list} "${backup_path}"/
+                mv ${backup_list} "${backup_path}"/     # DO NOT DOUBLE QUOTE backup_list, prevent line splitting
                 bdb_success "backing up existing dotfiles"
             fi
 
@@ -711,15 +710,19 @@
 
             ;;
         # TODO - suppress all output
-        s) _SILENT_="true" ;; # Silent mode
+        s) _SILENT_="true"  # Silent mode
+            bdb_alert "silent mode ${_SILENT_}"
+            ;;
         # TODO - print all commands output
-        v) _VERBOSE_="true" ;; # Verbose mode
-        :)                     # Missing option argument, print usage and exit with error
+        v) _VERBOSE_="true" # Verbose mode
+            bdb_alert "verbose mode ${_VERBOSE_}"
+            ;;
+        :)                  # Missing option argument, print usage and exit with error
 
             bdb_usage 1 "invalid option: -${OPTARG} requires an argument"
 
             ;;
-        \?) # Invalid option, print usage and exit with error
+        \?)                 # Invalid option, print usage and exit with error
 
             bdb_usage 1 "invalid option: -${OPTARG}" ;;
 
