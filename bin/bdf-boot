@@ -38,7 +38,7 @@
     ## Print success message
     bdb_success() {
 
-        echo -en "\n${GRN_COL}|vvv| SUCCESS ${1:-"*** UNKNOWN ***"} ${RST_COL}"
+        echo -en "${GRN_COL}|vvv| SUCCESS ${1:-"*** UNKNOWN ***"} ${RST_COL}"
 
     }
 
