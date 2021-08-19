@@ -506,26 +506,23 @@
     ## Configure user environment
     bdb_do_env() {
 
-        #TODO rewrite all function
-
         bdb_info_in "[ENV] configure user environment"
 
-        bdb_run "Checking ZSH as your login shell"
+        bdb_run "Checking your shell"
         zsh_path="$(which zsh)"
-        # If zsh is not the login shell
+        [[ -z "${zsh_path}" ]] && bdb_error "ZSH not installed" # Exit if zsh is not installed
         if [[ "${SHELL}" != "${zsh_path}" ]]; then
 
-            bdb_outcome "not set"
-            # Set zsh as login shell
-            bdb_command "Switching to ZSH"
-            echo "${zsh_path}" | sudo tee -a /etc/shells
-            sudo chsh -s "${zsh_path}" "${USER}"
-            bdb_success "switching to ZSH"
+            # zsh is not the login shell
+            bdb_outcome "not ZSH"
+            bdb_command "Changing login shell '${SHELL}' to '${zsh_path}'"
+            sudo chsh -s "${zsh_path}" "${USER}"                 # Change login shell
+            bdb_success "changing login shell"
 
         else
 
-            # Zsh is the login shell
-            bdb_outcome "set"
+            # zsh is the login shell
+            bdb_outcome "login shell is ${SHELL}"
 
         fi
 
