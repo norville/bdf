@@ -473,10 +473,13 @@
     ## Upgrade local system
     bdb_do_upgrade() {
 
-        bdb_info_in "Upgrade local system"
+        bdb_info_in "[UPD] Update local system"
+
+        bdb_run "Updating system packages"
 
         case "${DISTRO}" in
 
+        # Update system packages
         arch) # System is Arch
             bdb_command "Upgrading Arch system"
             sudo pacman --noconfirm -Syu
@@ -499,7 +502,15 @@
 
         esac
 
-        bdb_info_out "System upgraded."
+        bdb_run "Updating ZSH plugin manager"
+        # Force repo cloning by removing plugins dir
+        [[ -d "${HOME}"/.antigen ]] && rm -rf "${HOME}"/.antigen && bdb_outcome "done"
+        
+        bdb_run "Updating VIM plugin manager"
+        # Force repo cloning by removing plugins dir
+        [[ -d "${HOME}"/.vim/bundle/Vundle.vim ]] && rm -rf "${HOME}"/.vim/bundle/Vundle.vim && bdb_outcome "done"
+        
+        bdb_info_out "System updated."
 
     }
 
@@ -508,7 +519,7 @@
 
         bdb_info_in "[ENV] configure user environment"
 
-        bdb_run "Checking your shell"
+        bdb_run "Checking login shell"
         zsh_path="$(which zsh)"
         [[ -n "${zsh_path}" ]] || bdb_error "ZSH not installed" # Exit if zsh is not installed
         if [[ "${SHELL}" != "${zsh_path}" ]]; then
@@ -523,36 +534,6 @@
 
             # zsh is the login shell
             bdb_outcome "login shell is ${SHELL}"
-
-        fi
-
-        #TOD move to upgrade
-        # Delete Antigen dir to force cloning
-        bdb_run "Checking Antigen as ZSH plugin manager"
-        antigen_dir="${HOME}/.antigen"
-        if [[ -d "${antigen_dir}" ]]; then
-
-            bdb_outcome "ready"
-            rm -rf "${antigen_dir}"
-
-        else
-
-            bdb_outcome "missing"
-
-        fi
-
-        #TOD move to upgrade
-        # Delete Vundle dir to force cloning
-        bdb_run "Checking Vundle as VIM plugin manager"
-        vundle_path="${HOME}/.vim/bundle"
-        if [[ -d "${vundle_path}/Vundle.vim" ]]; then
-
-            bdb_outcome "ready"
-            rm -rf "${vundle_path}"
-
-        else
-
-            bdb_outcome "missing"
 
         fi
 
