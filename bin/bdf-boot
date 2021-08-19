@@ -510,7 +510,7 @@
 
         bdb_run "Checking your shell"
         zsh_path="$(which zsh)"
-        [[ -z "${zsh_path}" ]] && bdb_error "ZSH not installed" # Exit if zsh is not installed
+        [[ -n "${zsh_path}" ]] || bdb_error "ZSH not installed" # Exit if zsh is not installed
         if [[ "${SHELL}" != "${zsh_path}" ]]; then
 
             # zsh is not the login shell
