@@ -1,4 +1,5 @@
-#!/usr/bin/env bash # start new process
+#!/usr/bin/env bash
+# Use 'env' to start bash as a new process
 
 ### BDF BOOT - bootstrap Bassa's Dot Files
 
@@ -37,7 +38,7 @@
     ## Print success message
     bdb_success() {
 
-        echo -en "\n${GRN_COL}|vvv| SUCCESS ${1:-"*** UNKNOWN ***"} ${RST_COL}"
+        echo -en "${GRN_COL}|vvv| SUCCESS ${1:-"*** UNKNOWN ***"} ${RST_COL}"
 
     }
 
@@ -243,7 +244,7 @@
                 # in Apple's SUS catalog
                 touch /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
                 # find the CLI Tools update
-                clt_package="$(softwareupdate -l | grep '*.*Command Line' | awk -F ":" '{print $2}' | sed -e 's/^ *//' | tr -d '\n')"
+                clt_package="$(softwareupdate -l | grep '.*Command Line' | awk -F ":" '{print $2}' | sed -e 's/^ *//' | tr -d '\n')"
                 # install it
                 softwareupdate -i "${clt_package}"
                 bdb_success "installing CLT"
@@ -337,18 +338,17 @@
             bdb_success "cloning dotfiles into <${repo_path}>"
 
             # Detect existing dotfiles
-            trap - ERR                  # disable ERR trap, expecting checkout errors
-            backup_list="$(git --git-dir=${repo_path} --work-tree=${HOME} checkout 2>&1 | \
-                        egrep "\s+\." | \
-                        awk {'print $1'})"
-            trap "bdb_handle_error" ERR # reset ERR trap
+            backup_list="$(
+                git --git-dir="${repo_path}" --work-tree="${HOME}" checkout 2>&1 |
+                grep -E "\s+\." | awk '{print $1}'
+            )" || true
 
             # Backup existing dotfiles
             if [[ -n ${backup_list} ]]; then
                 bdb_command "Backing up existing dotfiles"
                 backup_path="${HOME}/.bdf.bak"
                 mkdir -p "${backup_path}"
-                mv ${backup_list} "${backup_path}"/
+                mv ${backup_list} "${backup_path}"/     # DO NOT DOUBLE QUOTE backup_list, prevent line splitting
                 bdb_success "backing up existing dotfiles"
             fi
 
@@ -412,7 +412,7 @@
 
             bdb_run "Looking for formulas already installed"
             # If extra formulae are installed
-            if [[ "$(brew bundle cleanup --file=${brewfile_path})" ]]; then
+            if [[ "$(brew bundle cleanup --file="${brewfile_path}")" ]]; then
 
                 bdb_outcome "found"
                 (bdb_ask "uninstall extra formulae" && { # Yes (true)
@@ -473,10 +473,13 @@
     ## Upgrade local system
     bdb_do_upgrade() {
 
-        bdb_info_in "Upgrade local system"
+        bdb_info_in "[UPD] Update local system"
+
+        bdb_run "Updating system packages"
 
         case "${DISTRO}" in
 
+        # Update system packages
         arch) # System is Arch
             bdb_command "Upgrading Arch system"
             sudo pacman --noconfirm -Syu
@@ -499,63 +502,38 @@
 
         esac
 
-        bdb_info_out "System upgraded."
+        bdb_run "Updating ZSH plugin manager"
+        # Force repo cloning by removing plugins dir
+        [[ -d "${HOME}"/.antigen ]] && rm -rf "${HOME}"/.antigen && bdb_outcome "done"
+        
+        bdb_run "Updating VIM plugin manager"
+        # Force repo cloning by removing plugins dir
+        [[ -d "${HOME}"/.vim/bundle/Vundle.vim ]] && rm -rf "${HOME}"/.vim/bundle/Vundle.vim && bdb_outcome "done"
+        
+        bdb_info_out "System updated."
 
     }
 
     ## Configure user environment
     bdb_do_env() {
 
-        #TODO rewrite all function
-
         bdb_info_in "[ENV] configure user environment"
 
-        bdb_run "Checking ZSH as your login shell"
+        bdb_run "Checking login shell"
         zsh_path="$(which zsh)"
-        # If zsh is not the login shell
+        [[ -n "${zsh_path}" ]] || bdb_error "ZSH not installed" # Exit if zsh is not installed
         if [[ "${SHELL}" != "${zsh_path}" ]]; then
 
-            bdb_outcome "not set"
-            # Set zsh as login shell
-            bdb_command "Switching to ZSH"
-            echo "${zsh_path}" | sudo tee -a /etc/shells
-            sudo chsh -s "${zsh_path}" "${USER}"
-            bdb_success "switching to ZSH"
+            # zsh is not the login shell
+            bdb_outcome "not ZSH"
+            bdb_command "Changing login shell '${SHELL}' to '${zsh_path}'"
+            sudo chsh -s "${zsh_path}" "${USER}"                 # Change login shell
+            bdb_success "changing login shell"
 
         else
 
-            # Zsh is the login shell
-            bdb_outcome "set"
-
-        fi
-
-        #TOD move to upgrade
-        # Delete Antigen dir to force cloning
-        bdb_run "Checking Antigen as ZSH plugin manager"
-        antigen_dir="${HOME}/.antigen"
-        if [[ -d "${antigen_dir}" ]]; then
-
-            bdb_outcome "ready"
-            rm -rf "${antigen_dir}"
-
-        else
-
-            bdb_outcome "missing"
-
-        fi
-
-        #TOD move to upgrade
-        # Delete Vundle dir to force cloning
-        bdb_run "Checking Vundle as VIM plugin manager"
-        vundle_path="${HOME}/.vim/bundle"
-        if [[ -d "${vundle_path}/Vundle.vim" ]]; then
-
-            bdb_outcome "ready"
-            rm -rf "${vundle_path}"
-
-        else
-
-            bdb_outcome "missing"
+            # zsh is the login shell
+            bdb_outcome "login shell is ${SHELL}"
 
         fi
 
@@ -710,15 +688,19 @@
 
             ;;
         # TODO - suppress all output
-        s) _SILENT_="true" ;; # Silent mode
+        s) _SILENT_="true"  # Silent mode
+            bdb_alert "silent mode ${_SILENT_}"
+            ;;
         # TODO - print all commands output
-        v) _VERBOSE_="true" ;; # Verbose mode
-        :)                     # Missing option argument, print usage and exit with error
+        v) _VERBOSE_="true" # Verbose mode
+            bdb_alert "verbose mode ${_VERBOSE_}"
+            ;;
+        :)                  # Missing option argument, print usage and exit with error
 
             bdb_usage 1 "invalid option: -${OPTARG} requires an argument"
 
             ;;
-        \?) # Invalid option, print usage and exit with error
+        \?)                 # Invalid option, print usage and exit with error
 
             bdb_usage 1 "invalid option: -${OPTARG}" ;;
 
@@ -727,7 +709,7 @@
     done
 
     # getopts finished, shift to args
-    shift "$((${OPTIND} - 1))"
+    shift "$((OPTIND - 1))"
 
     # Parse arguments
     if [[ "$#" -gt 0 ]]; then
