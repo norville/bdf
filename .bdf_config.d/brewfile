@@ -13,6 +13,7 @@ brew "git"
 brew "mackup"
 brew "mas"
 brew "openssh"
+brew "shellcheck"
 brew "shfmt"
 brew "tmux"
 brew "tree"
@@ -43,7 +44,7 @@ cask "handbrake"
 cask "iterm2"
 cask "microsoft-edge"
 #cask "microsoft-teams"
-cask "skype"
+#cask "skype"
 #cask "sonos"
 #cask "spectacle"
 cask "spotify"
@@ -59,8 +60,8 @@ cask "witch"
 mas "BBEdit", id: 404009241
 #mas "Fantastical", id: 975937182
 mas "Keynote", id: 409183694
-mas "Kindle", id: 405399194
-mas "Mactracker", id: 430255202
+#mas "Kindle", id: 405399194
+#mas "Mactracker", id: 430255202
 #mas "MeisterTask", id: 1051767777
 #mas "Microsoft Excel", id: 462058435
 #mas "Microsoft OneNote", id: 784801555
