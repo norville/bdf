@@ -3,7 +3,7 @@
     email = ing.norville@gmail.com
 [core]
     editor = vim
-    excludesfile = ~/.bdf.cfg/gitignore_global
+    excludesfile = ~/.bdf_config.d/gitignore_global
 [init]
     defaultBranch = main
 [status]
