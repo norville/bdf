@@ -353,6 +353,7 @@
             fi
 
             # Checkout repo
+            bdb_command "Checking out repository"
             git --git-dir="${repo_path}" --work-tree="${HOME}" checkout -f
             bdb_success "checking out repository"
 
@@ -492,7 +493,9 @@
             ;;
         debian) # System is Debian
             bdb_command "Upgrading Debian system"
-            sudo apt upgrade -y
+            sudo apt upgrade -y && \
+            sudo apt autoremove -y && \
+            sudo apt autoclean -y
             bdb_success "upgrading Debian system"
             ;;
 
@@ -778,7 +781,7 @@
         bdb_alert "System needs to be rebooted!"
         bdb_ask "Type 'y' when ready" && {
 
-            bdb_info_out "Rebooting local system"
+            bdb_info_out "Rebooting local system\n\n"
             sudo reboot
 
         }
