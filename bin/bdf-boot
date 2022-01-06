@@ -779,19 +779,21 @@
         bdb_alert "2. copy identities (e.g.: ssh-copy-id [-p <port_num>] -i <id_file> [user@]host)"
         bdb_alert ""
         bdb_alert "System needs to be rebooted!"
-        bdb_ask "Type 'y' when ready" && {
+        bdb_ask "Do you want to reboot NOW" && {
 
             bdb_info_out "Rebooting local system\n\n"
             sudo reboot
 
         }
+    else
+
+        # Close this session
+        bdb_info_out "Logging out user '${USER}'"
+        # TODO - run command to close session
+        printf -- "\n"
 
     fi
 
-    # Close this session
-    bdb_info_out "Logging out user '${USER}'"
-    # TODO - run command to close session
-    printf -- "\n"
     exit 0
 
 } # ensure download of entire script
