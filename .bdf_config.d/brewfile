@@ -26,7 +26,7 @@ brew "moreutils"
 brew "findutils"
 
 # Frameworks
-brew "python"
+#brew "python"
 #brew "ruby"
 #brew "node"
 #brew "yarn"
@@ -35,32 +35,32 @@ brew "python"
 #cask "anaconda"
 #cask "docker"
 #cask "dropbox"
-cask "firefox"
+#cask "firefox"
 #cask "forklift"
 #cask "google-chat"
 #cask "google-chrome"
-cask "handbrake"
-cask "iterm2"
-cask "microsoft-edge"
+#cask "handbrake"
+#cask "iterm2"
+#cask "microsoft-edge"
 #cask "microsoft-teams"
-cask "skype"
+#cask "skype"
 #cask "sonos"
 #cask "spectacle"
-cask "spotify"
+#cask "spotify"
 #cask "anydesk"
-cask "tor-browser"
-cask "transmission"
-cask "visual-studio-code"
-cask "vlc"
+#cask "tor-browser"
+#cask "transmission"
+#cask "visual-studio-code"
+#cask "vlc"
 #cask "vmware-fusion"
-cask "witch"
+#cask "witch"
 
 # Apps from Mac App Store
-mas "BBEdit", id: 404009241
+#mas "BBEdit", id: 404009241
 #mas "Fantastical", id: 975937182
-mas "Keynote", id: 409183694
-mas "Kindle", id: 405399194
-mas "Mactracker", id: 430255202
+#mas "Keynote", id: 409183694
+#mas "Kindle", id: 405399194
+#mas "Mactracker", id: 430255202
 #mas "MeisterTask", id: 1051767777
 #mas "Microsoft Excel", id: 462058435
 #mas "Microsoft OneNote", id: 784801555
@@ -68,18 +68,18 @@ mas "Mactracker", id: 430255202
 #mas "Microsoft Word", id: 462054704
 #mas "Microsoft Outlook", id: 985367838
 #mas "Microsoft To Do", id: 1274495053
-mas "MindNode", id: 1289197285
-mas "Numbers", id: 409203825
+#mas "MindNode", id: 1289197285
+#mas "Numbers", id: 409203825
 #mas "OneDrive", id: 823766827
-mas "Pages", id: 409201541
-mas "Pixelmator", id: 407963104
-mas "Spark", id: 1176895641
+#mas "Pages", id: 409201541
+#mas "Pixelmator", id: 407963104
+#mas "Spark", id: 1176895641
 #mas "Sweet Home 3D", id: 669289700
-mas "The Unarchiver", id: 425424353
-mas "Telegram", id: 747648890
-mas "WhatsApp", id: 1147396723
+#mas "The Unarchiver", id: 425424353
+#mas "Telegram", id: 747648890
+#mas "WhatsApp", id: 1147396723
 #mas "WiFi Explorer", id: 494803304
-mas "Moom", id: 419330170
+#mas "Moom", id: 419330170
 #mas "Xcode", id: 497799835
 
 # Fonts
