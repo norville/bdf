@@ -1,4 +1,4 @@
-#!/usr/bin/env bash # start new process
+#!/usr/bin/env bash
 
 ### BDF BOOT - bootstrap Bassa's Dot Files
 
@@ -18,6 +18,7 @@
     WHT_COL="${ESC_SEQ}97;01m"    # white
 
     ## Global variables
+    SYSTEM=""                           # mac or linux
     DISTRO=""                           # unix distro name
     CONF_DIR="${HOME}/.bdf_config.d"    # config files dir
     LOGFILE="${CONF_DIR}/bdf-boot.log"  # dfboot log file
@@ -188,25 +189,24 @@
 
         # Detect local system
         bdb_run "Detecting local system"
-        system=""
         # Path to Linux Standard Base infos
         lsb_path="/etc/os-release"
         # If LSB file exists
         if [[ -f "${lsb_path}" ]]; then
 
             # LSB found, get Linux name
-            system="$(grep -e '^ID=' ${lsb_path} | cut -d '=' -f 2)"
+            SYSTEM="$(grep -e '^ID=' ${lsb_path} | cut -d '=' -f 2)"
 
         else
 
             # LSB not found, assume macOS
-            system="macos"
+            SYSTEM="macos"
 
         fi
-        bdb_outcome "${system}"
+        bdb_outcome "${SYSTEM}"
 
         bdb_run "Preparing to bootstrap"
-        case "${system}" in
+        case "${SYSTEM}" in
         ubuntu | debian | raspbian) DISTRO="debian" ;;
         manjaro* | arch) DISTRO="arch" ;;
         macos) DISTRO="darwin" ;;
@@ -243,7 +243,7 @@
                 # in Apple's SUS catalog
                 touch /tmp/.com.apple.dt.CommandLineTools.installondemand.in-progress
                 # find the CLI Tools update
-                clt_package="$(softwareupdate -l | grep '*.*Command Line' | awk -F ":" '{print $2}' | sed -e 's/^ *//' | tr -d '\n')"
+                clt_package="$(softwareupdate -l | grep '.*Command Line' | awk -F ":" '{print $2}' | sed -e 's/^ *//' | tr -d '\n')"
                 # install it
                 softwareupdate -i "${clt_package}"
                 bdb_success "installing CLT"
@@ -323,7 +323,7 @@
         repo_path="${HOME}/.bdf.git"
         mkdir -p "${repo_path}"
         # If bare repo is missing
-        if ! git --git-dir=${repo_path} rev-parse --is-bare-repository &>/dev/null; then
+        if ! git --git-dir="${repo_path}" rev-parse --is-bare-repository &>/dev/null; then
 
             bdb_outcome "missing"
             # Fresh system
@@ -340,14 +340,14 @@
             trap "" ERR # disable ERR handling
             # checkout repo and save file names of existing dotfiles
             backup_list=$(
-                git --git-dir="${repo_path}" --work-tree="${HOME}" checkout 2>&1 | egrep "\s+\." | awk {'print $1'}
+                git --git-dir="${repo_path}" --work-tree="${HOME}" checkout 2>&1 | grep -E "\s+\." | awk '{print $1}'
             )
             trap - ERR  # reset ERR handling
             if [[ ${backup_list} ]]; then
                 bdb_command "Backing up existing dotfiles"
                 backup_path="${HOME}/.bdf.bak"
                 mkdir -p "${backup_path}"
-                mv ${backup_list} "${backup_path}"/
+                mv ${backup_list} "${backup_path}"/     # NO QUOTES PLEASE - ensure variable expansion
                 bdb_success "backing up existing dotfiles"
             fi
 
@@ -382,14 +382,14 @@
         bdb_info_in "[APPS] bootstrap applications"
 
         # Detect system
+        [[ "${SYSTEM}" != "macos" ]] && pkgs="$(xargs -a <(awk '! /^ *(#|$)/' "${CONF_DIR}/pkgfile") -r)" || pkgs=""
         case "${DISTRO}" in
 
         arch) # System is Arch
 
             # Install or update required packages via Pacman
-            arch_pkgs="$(xargs -a <(awk '! /^ *(#|$)/' "${CONF_DIR}/pkgfile") -r)"
-            bdb_command "Installing Arch packages: <${arch_pkgs}>"
-            sudo pacman --noconfirm --needed -S ${arch_pkgs} # NO QUOTES PLEASE - ensure variable expansion
+            bdb_command "Installing Arch packages: <${pkgs}>"
+            sudo pacman --noconfirm --needed -S ${pkgs} # NO QUOTES PLEASE - ensure variable expansion
             bdb_success "installing Arch packages"
 
             # Cleanup
@@ -409,7 +409,7 @@
 
             bdb_run "Looking for formulas already installed"
             # If extra formulae are installed
-            if [[ "$(brew bundle cleanup --file=${brewfile_path})" ]]; then
+            if [[ "$(brew bundle cleanup --file="${brewfile_path}")" ]]; then
 
                 bdb_outcome "found"
                 (bdb_ask "uninstall extra formulae" && { # Yes (true)
@@ -444,9 +444,8 @@
         debian) # System is Debian
 
             # Install or update required packages via APT
-            debian_pkgs="$(xargs -a <(awk '! /^ *(#|$)/' "${CONF_DIR}/pkgfile") -r)"
-            bdb_command "Installing APT packages: <${debian_pkgs}>"
-            sudo apt-get install -y ${debian_pkgs} # NO QUOTES PLEASE - ensure variable expansion
+            bdb_command "Installing APT packages: <${pkgs}>"
+            sudo apt-get install -y ${pkgs} # NO QUOTES PLEASE - ensure variable expansion
             bdb_success "installing APT packages"
 
             # Cleanup
@@ -724,7 +723,7 @@
     done
 
     # getopts finished, shift to args
-    shift "$((${OPTIND} - 1))"
+    shift "$((OPTIND - 1))"
 
     # Parse arguments
     if [[ "$#" -gt 0 ]]; then
