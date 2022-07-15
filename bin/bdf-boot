@@ -23,6 +23,8 @@
     CONF_DIR="${HOME}/.bdf_config.d"    # config files dir
     LOGFILE="${CONF_DIR}/bdf-boot.log"  # dfboot log file
     PROGNAME="$(basename "$0")"         # current running command
+    REPO_URL_HTTPS="https://github.com/norville/bdf.git"
+    REPO_URL_SSH="git@github.com:norville/bdf.git"
 
     ## Flags
     _FRESH_=""   # fresh install
@@ -330,9 +332,8 @@
             _FRESH_="true"
 
             # Clone remote repo into bare repo
-            repo_url="git@github.com:norville/bdf.git"
             bdb_command "Cloning dotfiles into a bare repo"
-            git clone --bare "${repo_url}" "${repo_path}"               # Clone main branch
+            git clone --bare "${REPO_URL_HTTPS}" "${repo_path}"               # Clone main branch
             #git clone --bare -b <git-branch> ${repo_url} ${repo_path}  # Clone specifc branch
             bdb_success "cloning dotfiles into <${repo_path}>"
 
