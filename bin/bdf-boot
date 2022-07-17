@@ -724,7 +724,7 @@
     done
 
     # getopts finished, shift to args
-    shift "$((OPTIND - 1))"
+    shift "$((${OPTIND} - 1))"
 
     # Parse arguments
     if [[ "$#" -gt 0 ]]; then
